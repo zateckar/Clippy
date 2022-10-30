@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: |
         dotnet restore
-        msbuild Clippy.sln /t:publish /p:Configuration=Release /p:Platform=AnyCPU /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
+        msbuild Clippy.sln /t:publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
