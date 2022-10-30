@@ -22,3 +22,18 @@ jobs:
         dotnet restore
         msbuild /t:publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
         
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Clippy
+        path: |
+          D:\a\Clippy\Clippy\bin\Debug\net6.0-windows8.0\publish\*
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          D:\a\Clippy\Clippy\bin\Debug\net6.0-windows8.0\publish\*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+        
