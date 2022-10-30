@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: |
         dotnet restore
-        msbuild /t:publish /p:Configuration=Release
+        msbuild /t:publish /p:Configuration=Release /p:PublishSingleFile=true
                 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
