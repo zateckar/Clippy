@@ -26,7 +26,7 @@ jobs:
       with:
         name: Clippy
         path: |
-          D:\a\Clippy\Clippy\bin\Debug\net6.0-windows8.0\win-x64\publish\*
+          D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\win-x64\publish\*
 
     - name: Generate release tag
       id: tag
@@ -38,7 +38,7 @@ jobs:
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         files: |
-          D:\a\Clippy\Clippy\bin\Debug\net6.0-windows8.0\win-x64\publish\*
+          D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\win-x64\publish\*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
         
