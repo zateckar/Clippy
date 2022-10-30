@@ -1,47 +1,26 @@
 name: .NET Core Desktop
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
-
   build:
 
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
-    env:
-      Solution_Name:  Clippy.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+    runs-on: windows-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
+    - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+    - uses: microsoft/setup-msbuild@v1.1
 
+    - uses: actions/checkout@v3
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild /t:publish /p:Configuration=Release /p:Configuration=$env:Configuration /p:PublishProfile=ClickOnceProfile /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false /p:TargetFramework=net6.0-windows8.0 /p:PublishDir=bin\publish
-      env:
-        Configuration: ${{ matrix.configuration }}
+    - name: Build
+      run: |
+        dotnet restore
+        msbuild /t:publish /p:Configuration=Release /p:Configuration=$env:Configuration /p:PublishProfile=ClickOnceProfile /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false /p:TargetFramework=net6.0-windows8.0 /p:PublishDir=bin\publish
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
@@ -57,4 +36,4 @@ jobs:
         files: |
           D:\a\Clippy\Clippy\bin\Publish\**\*
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       
