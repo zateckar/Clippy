@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: |
         dotnet restore
-        msbuild /t:publish /r:win-x64 /p:Configuration=Release /p:TargetFramework=net6.0-windows8.0 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        dotnet publish -r win-x64 --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
                 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
