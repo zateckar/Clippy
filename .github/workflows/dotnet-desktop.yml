@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: |
         dotnet restore
-        msbuild D:\a\Clippy\Clippy\Clippy.sln /t:publish /p:Configuration=Release /p:Platform="Any CPU" /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false /p:PublishDir=bin\publish
+        msbuild D:\a\Clippy\Clippy\Clippy.sln /t:publish /p:Platform="Any CPU" /p:RuntimeIdentifier=win-x64 p:/TargetFramework=net6.0 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false /p:PublishDir=bin\publish
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
@@ -37,3 +37,4 @@ jobs:
           D:\a\Clippy\Clippy\bin\Publish\**\*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       
+
