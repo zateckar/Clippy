@@ -20,4 +20,5 @@ jobs:
     - name: Build
       run: |
         dotnet restore
-        msbuild /t:publish
+        msbuild /t:publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
+        
