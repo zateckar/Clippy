@@ -24,7 +24,7 @@ jobs:
       run: dotnet restore
         
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore /p:EnableWindowsTargeting=true
         
     - name: Publish
       run: dotnet publish Clippy.csproj -c Release -o release — nologo
