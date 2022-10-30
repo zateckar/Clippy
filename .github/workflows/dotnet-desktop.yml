@@ -17,9 +17,8 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Build
+    - name: Restore, Build and Publish
       run: |
-        dotnet restore
         dotnet publish -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
                 
     - name: Upload artifact
