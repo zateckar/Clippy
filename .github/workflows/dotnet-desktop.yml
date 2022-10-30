@@ -29,9 +29,15 @@ jobs:
         path: |
           D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\publish\*
 
+    - name: Generate release tag
+      id: tag
+      run: |
+        echo "::set-output name=release_tag::Release_$(date +"%Y.%m.%d_%H-%M")"
+
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
         files: |
           D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\publish\*
       env:
