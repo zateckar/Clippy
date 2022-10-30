@@ -3,37 +3,44 @@ name: .NET Core Desktop
 on:
   workflow_dispatch:
 
+
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['6.0.x' ]
 
     steps:
-    - uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-
-    - uses: microsoft/setup-msbuild@v1.1
-
     - uses: actions/checkout@v3
-
+      
+    - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+          
+    - name: Install dependencies
+      run: dotnet restore
+        
     - name: Build
-      run: |
-        dotnet restore
-        msbuild Clippy.sln /t:publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
+      run: dotnet build --configuration Release --no-restore
+        
+    - name: Publish
+      run: dotnet publish Clippy.csproj -c Release -o release — nologo
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
         name: Clippy
         path: |
-          D:\a\Clippy\Clippy\bin\Publish\**\*
+          /home/runner/work/Clippy/Clippy/release/
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          D:\a\Clippy\Clippy\bin\Publish\**\*
+          /home/runner/work/Clippy/Clippy/release/
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       
-
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+        
