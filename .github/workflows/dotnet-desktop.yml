@@ -20,8 +20,8 @@ jobs:
     - name: Build
       run: |
         dotnet restore
-        msbuild /t:publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
-        
+        msbuild /t:publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:TargetFramework=net6.0 /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:SelfContained=false
+                
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
