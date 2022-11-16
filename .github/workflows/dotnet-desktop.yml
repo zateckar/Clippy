@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - uses: microsoft/setup-msbuild@v1.1
+
+    - uses: actions/checkout@v2
+
+    - name: Restore, Build and Publish
+      run: |
+        dotnet publish -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+                
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Clippy
+        path: |
+          D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\win-x64\publish\*
+
+    - name: Generate release tag
+      id: tag
+      run: |
+        echo "::set-output name=release_tag::Release_$(date +"%Y.%m.%d_%H-%M")"
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        files: |
+          D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\win-x64\publish\*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+        
