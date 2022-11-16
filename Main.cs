@@ -1588,34 +1588,14 @@ namespace Clippy
                         || NumberOfImageCells == 0 && string.IsNullOrWhiteSpace(clipText)
                         || NumberOfImageCells != 0 && settings.MaxCellsToCaptureImage > NumberOfImageCells))
                 {
-                    //clipType = "img";
-                    
+                   
                     if (iData.GetDataPresent(DataFormats.Dib))
                     {
-                        // First - try get 24b bitmap + 8b alpfa (transparency)
-                        // https://www.csharpcodi.com/vs2/1561/noterium/src/Noterium.Core/Helpers/ClipboardHelper.cs/
-                        // https://www.hostedredmine.com/issues/929403
                         var dibData = Clipboard.GetData(DataFormats.Dib);
                         if (dibData != null)
                         {
                             var dib = ((MemoryStream)dibData).ToArray();
-                            var width = BitConverter.ToInt32(dib, 4);
-                            var height = BitConverter.ToInt32(dib, 8);
-                            var bpp = BitConverter.ToInt16(dib, 14);
-                            if (bpp == 32)
-                            {
-                                var gch = GCHandle.Alloc(dib, GCHandleType.Pinned);
-                                try
-                                {
-                                    var ptr = new IntPtr((long)gch.AddrOfPinnedObject() + 40);
-                                    bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppArgb, ptr);
-                                    bitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
-                                }
-                                finally
-                                {
-                                    gch.Free();
-                                }
-                            }
+                            bitmap = ImageFromClipboardDib(dib);
                         }
                     }
 
@@ -4747,7 +4727,46 @@ namespace Clippy
             notifyIcon.Text = newTitle;
         }
 
+        public static Bitmap ImageFromClipboardDib(Byte[] dibBytes)
+        {
+            Bitmap bitmap = null;
+            var width = 0;
+            var height = 0;
+            var planes = 0;
+            var bitCount = 0;
+            var compression = 0;
+            var headerSize = 0;
+            if (dibBytes == null || dibBytes.Length < 4)
+                return null;
+            headerSize = BitConverter.ToInt32(dibBytes, 0);
+            // Only supporting 40-byte DIB from clipboard
+            if (headerSize != 40)
+                return null;
 
+            // First - try get 24b bitmap + 8b alpfa (transparency)
+            // https://www.csharpcodi.com/vs2/1561/noterium/src/Noterium.Core/Helpers/ClipboardHelper.cs/
+            // https://www.hostedredmine.com/issues/929403
+            width = BitConverter.ToInt32(dibBytes, 4);
+            height = BitConverter.ToInt32(dibBytes, 8);
+            planes = BitConverter.ToInt16(dibBytes, 12);
+            bitCount = BitConverter.ToInt16(dibBytes, 14);
+            compression = BitConverter.ToInt32(dibBytes, 16);
+            if (bitCount == 32 && planes == 1 && (compression == 0))
+            {
+                var gch = GCHandle.Alloc(dibBytes, GCHandleType.Pinned);
+                try
+                {
+                    var ptr = new IntPtr((long)gch.AddrOfPinnedObject() + headerSize);
+                    bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppArgb, ptr);
+                    bitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
+                }
+                finally
+                {
+                    gch.Free();
+                }
+            }
+            return bitmap;
+        }
 
         public struct removeClipsFilter
         {
