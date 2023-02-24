@@ -21,6 +21,21 @@ jobs:
       run: |
         dotnet publish -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
+    - name: Content list
+      uses: enricomarino/actions@v2
+      with:
+        source: /
+
+    - name: Content list
+      uses: enricomarino/actions@v2
+      with:
+        source: D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\win-x64\publish
+        
+    - name: Content list
+      uses: enricomarino/actions@v2
+      with:
+        source: D:\a\Clippy\Clippy\bin\Release\net6.0-windows8.0\win-x64
+
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
