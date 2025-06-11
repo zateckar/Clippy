@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows8.0</TargetFramework>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -102,8 +102,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="InputSimulatorEx" Version="2.0.0" />
-    <PackageReference Include="LiteDB" Version="5.0.13" />
+    <PackageReference Include="InputSimulatorEx" Version="2.1.1" />
+    <PackageReference Include="LiteDB" Version="5.0.21" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="AboutBox.cs" />
